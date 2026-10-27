@@ -59,8 +59,8 @@
             <span class="hero-badge">🎯 Practice Makes Permanent</span>
             <h1>ฝึกทำโจทย์ซ้ำๆ จนเข้าใจลึกซึ้ง<br/>ตั้งแต่พื้นฐานจนสร้างเว็บไซต์ได้จริง</h1>
             <p>
-              เลือกหมวดวิชาที่ต้องการฝึก อ่านโจทย์ เขียนโค้ดลงใน Editor พร้อมดูผลลัพธ์ Live Preview ทันที
-              ตรวจคำตอบด้วย Test Cases อัตโนมัติ และกดรีเซ็ตเพื่อฝึกทำซ้ำได้ไม่จำกัดรอบ
+              แยกการเรียนเป็นรายวิชาและรายบท แต่ละบทมีสรุปเนื้อหา คำสั่งที่ต้องใช้ และตัวอย่างโค้ดให้ศึกษาก่อนลงมือทำโจทย์
+              พร้อมโจทย์ฝึกซ้ำบทละ 35 ข้อ (ง่าย 20 • ปานกลาง 10 • ยาก 5)
             </p>
           </div>
           <div class="hero-summary-box" id="hero-summary-box">
@@ -81,31 +81,60 @@
       </div>
     </section>
 
-    <!-- ==================== VIEW 2: SUBJECT CURRICULUM & PROBLEM LIST ==================== -->
+    <!-- ==================== VIEW 2: SUBJECT CHAPTERS LIST (เลือกบทเรียน) ==================== -->
     <section id="subject-view" class="view-section">
       <div class="container">
         <div id="subject-banner" class="subject-banner">
           <!-- Rendered by JS -->
         </div>
 
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">🗂️ เลือกบทเรียนที่ต้องการศึกษาและฝึกทำโจทย์</h2>
+            <p class="section-desc">แต่ละบทประกอบด้วย: เนื้อหาที่ต้องรู้ + คำสั่งที่ต้องใช้ + ตัวอย่างโค้ด + โจทย์ฝึกหัด 35 ข้อ (ง่าย 20, ปานกลาง 10, ยาก 5)</p>
+          </div>
+        </div>
+
+        <div id="chapters-grid" class="chapters-grid">
+          <!-- Chapter cards rendered by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 3: CHAPTER LESSON + 35 PROBLEMS ==================== -->
+    <section id="chapter-view" class="view-section">
+      <div class="container">
+        <div id="chapter-header-box" class="subject-banner">
+          <!-- Rendered by JS -->
+        </div>
+
+        <!-- Lesson Content & Code Examples Box -->
+        <div id="chapter-lesson-section" class="lesson-container">
+          <!-- Rendered by JS -->
+        </div>
+
+        <!-- Difficulty Tabs & Filters for the 35 Problems -->
+        <div class="problems-section-header">
+          <div>
+            <h2 class="section-title">🎯 โจทย์ฝึกหัดประจำบท (35 ข้อ)</h2>
+            <p class="section-desc">แบ่งระดับความยาก: ง่าย 20 ข้อ • ปานกลาง 10 ข้อ • ยาก 5 ข้อ (ฝึกทำซ้ำได้ไม่จำกัดรอบ)</p>
+          </div>
+        </div>
+
+        <div class="difficulty-tabs-bar" id="difficulty-tabs-bar">
+          <button class="diff-tab-btn active" data-diff="all">ทั้งหมด (35 ข้อ)</button>
+          <button class="diff-tab-btn" data-diff="ง่าย">🌱 ง่าย (20 ข้อ)</button>
+          <button class="diff-tab-btn" data-diff="ปานกลาง">⚡ ปานกลาง (10 ข้อ)</button>
+          <button class="diff-tab-btn" data-diff="ยาก">🔥 ยาก (5 ข้อ)</button>
+        </div>
+
         <div class="filter-toolbar">
           <div class="search-box">
             <span class="search-icon">🔍</span>
-            <input type="text" id="problem-search-input" placeholder="ค้นหาชื่อโจทย์, หัวข้อ, หรือคำสำคัญ (เช่น DOM, Array, Form, Todo)..." />
+            <input type="text" id="problem-search-input" placeholder="ค้นหาชื่อโจทย์ หรือคำสั่งในบทนี้..." />
           </div>
 
           <div class="filter-group">
-            <select id="filter-module" class="filter-select" aria-label="กรองตามบทเรียน">
-              <option value="all">ทุกบทเรียน (All Modules)</option>
-            </select>
-
-            <select id="filter-difficulty" class="filter-select" aria-label="กรองตามระดับความยาก">
-              <option value="all">ทุกระดับความยาก</option>
-              <option value="พื้นฐาน">🌱 พื้นฐาน (Basic)</option>
-              <option value="ปานกลาง">⚡ ปานกลาง (Intermediate)</option>
-              <option value="ใช้งานจริง">🚀 สร้างเว็บจริง (Real Web)</option>
-            </select>
-
             <select id="filter-status" class="filter-select" aria-label="กรองตามสถานะ">
               <option value="all">ทุกสถานะ</option>
               <option value="solved">✅ ผ่านแล้ว</option>
@@ -114,24 +143,24 @@
           </div>
         </div>
 
-        <div id="curriculum-container" class="curriculum-container">
-          <!-- Modules and problem cards rendered by JS -->
+        <div id="chapter-problems-container" class="curriculum-container">
+          <!-- 35 problems grouped by Easy (20), Medium (10), Hard (5) -->
         </div>
       </div>
     </section>
 
-    <!-- ==================== VIEW 3: INTERACTIVE PROBLEM WORKSPACE ==================== -->
+    <!-- ==================== VIEW 4: INTERACTIVE PROBLEM WORKSPACE ==================== -->
     <section id="workspace-view" class="view-section workspace-section">
       <!-- Workspace Top Control Bar -->
       <div class="workspace-toolbar">
         <div class="ws-toolbar-left">
-          <button id="btn-back-to-subject" class="ws-btn secondary" title="กลับหน้ารวมโจทย์">
-            ← รายการโจทย์
+          <button id="btn-back-to-chapter" class="ws-btn secondary" title="กลับหน้าบทเรียนและรายการโจทย์">
+            ← กลับหน้าบทเรียน
           </button>
 
           <div class="problem-nav-group">
             <button id="btn-prev-problem" class="ws-nav-btn" title="โจทย์ก่อนหน้า">◀</button>
-            <select id="ws-problem-select" class="ws-problem-select" aria-label="เลือกโจทย์"></select>
+            <select id="ws-problem-select" class="ws-problem-select" aria-label="เลือกโจทย์ในบทนี้"></select>
             <button id="btn-next-problem" class="ws-nav-btn" title="โจทย์ถัดไป">▶</button>
           </div>
 
@@ -155,23 +184,33 @@
 
       <!-- 3-Pane Split Workspace -->
       <div class="workspace-grid">
-        <!-- PANE 1: Problem Description, Hints, Solution & Test Results -->
+        <!-- PANE 1: Problem Description, Lesson Reference, Test Results & Solution -->
         <aside class="ws-pane problem-pane">
           <div class="pane-tabs">
             <button class="pane-tab active" data-left-tab="description">
-              📖 โจทย์ &amp; คำใบ้
+              📖 โจทย์
+            </button>
+            <button class="pane-tab" data-left-tab="lesson">
+              📘 เนื้อหาบทนี้
             </button>
             <button class="pane-tab" data-left-tab="tests" id="tab-btn-tests">
-              🧪 ผลตรวจ Test Cases <span id="test-tab-badge" class="tab-badge"></span>
+              🧪 ผลตรวจ <span id="test-tab-badge" class="tab-badge"></span>
             </button>
             <button class="pane-tab" data-left-tab="solution">
-              💡 เฉลย (Solution)
+              💡 เฉลย
             </button>
           </div>
 
           <!-- Tab Content: Description & Hints -->
           <div id="left-tab-description" class="pane-tab-content active">
             <div id="problem-detail-content" class="problem-detail-content">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+
+          <!-- Tab Content: Quick Chapter Lesson Reference -->
+          <div id="left-tab-lesson" class="pane-tab-content">
+            <div id="workspace-lesson-content" class="workspace-lesson-content">
               <!-- Rendered by JS -->
             </div>
           </div>
@@ -197,15 +236,12 @@
             <div class="editor-tabs" id="editor-tabs">
               <button class="editor-tab" data-editor-lang="html">
                 <span class="lang-dot html-dot"></span> index.html
-                <span class="tab-active-indicator" id="ind-html"></span>
               </button>
               <button class="editor-tab" data-editor-lang="css">
                 <span class="lang-dot css-dot"></span> style.css
-                <span class="tab-active-indicator" id="ind-css"></span>
               </button>
               <button class="editor-tab active" data-editor-lang="js">
                 <span class="lang-dot js-dot"></span> script.js
-                <span class="tab-active-indicator" id="ind-js"></span>
               </button>
             </div>
             <div class="editor-actions">
@@ -278,42 +314,17 @@
   <div id="extend-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
     <div class="modal-card">
       <div class="modal-header">
-        <h3>🛠 วิธีเพิ่มบล็อกวิชาใหม่ หรือเพิ่มโจทย์ด้วยตัวเอง</h3>
+        <h3>🛠 วิธีเพิ่มบล็อกวิชาใหม่ หรือเพิ่มบทเรียนและโจทย์</h3>
         <button id="btn-close-modal" class="icon-btn">✕</button>
       </div>
       <div class="modal-body">
-        <p>เว็บไซต์นี้ออกแบบโครงสร้างแบบ <strong>Modular</strong> เพื่อให้คุณสามารถเพิ่มวิชาใหม่ (เช่น Backend, Python, SQL, React) หรือเพิ่มโจทย์ใหม่ในอนาคตได้ง่ายมาก:</p>
+        <p>เว็บไซต์นี้ออกแบบโครงสร้างแบบ <strong>Modular</strong> แยกตามรายบทเรียนในโฟลเดอร์ <code>js/data/</code>:</p>
         <div class="guide-step">
-          <h4>1. เพิ่มบล็อกวิชาใหม่ (Subject Block)</h4>
-          <p>เปิดไฟล์ <code>js/data/subjects.js</code> แล้วเพิ่ม Object วิชาใหม่เข้าไปใน Array <code>SUBJECTS</code> โดยกำหนด <code>id</code>, <code>title</code>, <code>description</code>, และสถานะ <code>status: 'available'</code></p>
+          <h4>1. โครงสร้างบทเรียนและโจทย์</h4>
+          <p>ไฟล์ <code>js/data/chapter1.js</code> ถึง <code>chapter5.js</code> เก็บเนื้อหาบทเรียน (<code>lesson</code>) และโจทย์ประจำบท 35 ข้อ (ง่าย 20, ปานกลาง 10, ยาก 5)</p>
         </div>
         <div class="guide-step">
-          <h4>2. เพิ่มโจทย์และ Test Cases</h4>
-          <p>เปิดไฟล์ <code>js/data/frontend-problems.js</code> (หรือสร้างไฟล์ข้อมูลวิชาใหม่) แต่ละโจทย์ประกอบด้วย:</p>
-          <pre class="guide-code"><code>{
-  id: 'custom-01',
-  moduleId: 'mod-1',
-  title: 'ชื่อโจทย์ของคุณ',
-  difficulty: 'พื้นฐาน', // พื้นฐาน | ปานกลาง | ใช้งานจริง
-  description: 'คำอธิบายโจทย์...',
-  requirements: ['เงื่อนไขที่ 1', 'เงื่อนไขที่ 2'],
-  starterCode: { html: '...', css: '...', js: '...' },
-  hints: ['คำใบ้ที่ 1', 'คำใบ้ที่ 2'],
-  solution: { html: '...', css: '...', js: '...' },
-  testCases: [
-    {
-      name: 'ชื่อการทดสอบที่ 1',
-      run: ({ win, doc }) =&gt; {
-        // ตรวจสอบค่าจากฟังก์ชัน หรือ DOM
-        const result = win.myFunction(5);
-        return { passed: result === 10, expected: 10, actual: result };
-      }
-    }
-  ]
-}</code></pre>
-        </div>
-        <div class="guide-step">
-          <h4>3. จัดการข้อมูลความคืบหน้า (Backup / Reset Progress)</h4>
+          <h4>2. จัดการข้อมูลความคืบหน้า (Backup / Reset Progress)</h4>
           <div class="modal-actions-row">
             <button id="btn-export-progress" class="ws-btn secondary">⬇ ส่งออกประวัติการฝึก (Export JSON)</button>
             <button id="btn-reset-all-progress" class="ws-btn danger">🗑 ล้างสถิติการฝึกทั้งหมด</button>
@@ -327,9 +338,11 @@
   <div id="toast-container" class="toast-container"></div>
 
   <script src="./js/data/subjects.js"></script>
-  <script src="./js/data/problems-mod1-2.js"></script>
-  <script src="./js/data/problems-mod3-4.js"></script>
-  <script src="./js/data/problems-mod5.js"></script>
+  <script src="./js/data/chapter1.js"></script>
+  <script src="./js/data/chapter2.js"></script>
+  <script src="./js/data/chapter3.js"></script>
+  <script src="./js/data/chapter4.js"></script>
+  <script src="./js/data/chapter5.js"></script>
   <script src="./js/data/frontend-problems.js"></script>
   <script src="./js/app.js"></script>
 </body>

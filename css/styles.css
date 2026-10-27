@@ -716,7 +716,8 @@ button, select, input {
   border-radius: 6px;
 }
 
-.diff-พื้นฐาน {
+.diff-พื้นฐาน,
+.diff-ง่าย {
   background-color: var(--success-soft);
   color: var(--success);
 }
@@ -726,9 +727,207 @@ button, select, input {
   color: var(--warning);
 }
 
-.diff-ใช้งานจริง {
-  background-color: var(--purple-soft);
-  color: var(--purple);
+.diff-ใช้งานจริง,
+.diff-ยาก {
+  background-color: var(--danger-soft);
+  color: var(--danger);
+}
+
+/* ==========================================================================
+   CHAPTERS GRID & LESSON GUIDE STYLES
+   ========================================================================== */
+.chapters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 22px;
+}
+
+.chapter-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.chapter-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent-primary);
+  box-shadow: var(--shadow-md);
+}
+
+.chapter-diff-pills {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 14px 0;
+}
+
+.chapter-diff-pill {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 8px;
+  text-align: center;
+  font-size: 0.78rem;
+}
+
+.chapter-diff-pill strong {
+  display: block;
+  font-size: 0.92rem;
+  margin-top: 2px;
+}
+
+.lesson-container {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  margin-bottom: 32px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.lesson-header-bar {
+  padding: 18px 24px;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.14), rgba(16, 185, 129, 0.1));
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  cursor: pointer;
+}
+
+.lesson-header-bar h2 {
+  font-size: 1.18rem;
+  font-weight: 700;
+}
+
+.lesson-body {
+  padding: 24px;
+}
+
+.lesson-body.collapsed {
+  display: none;
+}
+
+.lesson-overview-box {
+  background-color: var(--bg-tertiary);
+  border-left: 4px solid var(--accent-primary);
+  padding: 16px 20px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+.lesson-sub-heading {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 22px 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.syntax-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.syntax-card {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.syntax-card-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--accent-primary);
+  margin-bottom: 6px;
+}
+
+.syntax-card-desc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+
+.syntax-card-code {
+  background-color: var(--bg-editor);
+  color: #e2e8f0;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  overflow-x: auto;
+}
+
+.examples-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 16px;
+}
+
+.example-card {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 18px;
+}
+
+.example-card h4 {
+  font-size: 0.95rem;
+  margin-bottom: 6px;
+  color: var(--text-primary);
+}
+
+.example-card p {
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+.problems-section-header {
+  margin-bottom: 16px;
+}
+
+.difficulty-tabs-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.diff-tab-btn {
+  padding: 9px 18px;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-secondary);
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.diff-tab-btn:hover {
+  border-color: var(--accent-primary);
+  color: var(--text-primary);
+}
+
+.diff-tab-btn.active {
+  background-color: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: #ffffff;
 }
 
 .problem-row-right {

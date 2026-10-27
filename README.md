@@ -1,72 +1,63 @@
-# 💻 PracticeChinnakrit — แพลตฟอร์มฝึกทำโจทย์และสร้างเว็บไซต์
+# ⚡ PracticeChinnakrit — Interactive Web & Coding Practice Platform
 
-🌐 **ลิงก์เข้าใช้งานเว็บไซต์ (GitHub Pages):** **[https://chinnakritthan.github.io/PracticeChinnakrit/](https://chinnakritthan.github.io/PracticeChinnakrit/)**
+แพลตฟอร์มฝึกทำโจทย์เขียนโค้ดและสร้างเว็บไซต์แบบ Interactive (Repetition Mastery) ที่ออกแบบมาให้แยกเป็นวิชาและแยกเป็นบทเรียนอย่างชัดเจน พร้อมเนื้อหาสรุป สิ่งที่ต้องใช้ ตัวอย่างโค้ด และโจทย์ฝึกทำซ้ำตั้งแต่พื้นฐานไปจนถึงการสร้างระบบเว็บจริง
 
-เว็บแอปพลิเคชันสำหรับฝึกเขียนโค้ดซ้ำๆ หลายรอบเพื่อให้เข้าใจลึกซึ้ง ตั้งแต่พื้นฐานไปจนถึงการสร้างเว็บแอปพลิเคชันใช้งานจริง โดยแบ่งแยกเป็นหมวดวิชา (Subject Blocks) และรองรับการขยายเพิ่มวิชาใหม่ในอนาคต
-
----
-
-## ✨ ฟีเจอร์หลัก (Features)
-
-1. **แยกหมวดวิชาเป็นบล็อก (Subject Blocks)**
-   - **Frontend Web Development (JS & DOM Mastery)**: พร้อมฝึกทันที 5 บทเรียน (20 โจทย์คัดสรร 60 Test Cases)
-   - โครงสร้างรองรับการเพิ่มบล็อกวิชาใหม่ในอนาคต (เช่น Backend Node.js, React, SQL) ได้ทันที
-2. **Code Editor แยกแท็บ HTML / CSS / JS พร้อม Live Web Preview**
-   - แก้ไขโค้ดแยกไฟล์ `index.html`, `style.css`, `script.js`
-   - แสดงผลหน้าเว็บแบบเรียลไทม์ (Live Preview) พร้อมหน้าต่าง **Console Output** แสดงผลจาก `console.log()` และแจ้งเตือน Error
-3. **ระบบตรวจคำตอบอัตโนมัติ (Automated Test Cases)**
-   - แต่ละโจทย์มี Test Cases 3 ข้อที่ตรวจสอบทั้งค่าที่คืนจากฟังก์ชัน (Return Value), การเปลี่ยนแปลงของ DOM (`textContent`, `classList`, `disabled`), และการจำลองการคลิก/พิมพ์ของผู้ใช้ (Events)
-4. **ระบบคำใบ้ทีละขั้น (Hints) และเฉลย (Solution)**
-   - เปิดดูคำใบ้ทีละขั้นเมื่อติดขัด หรือกดดูโค้ดเฉลยพร้อมปุ่มนำเฉลยไปใส่ใน Editor เพื่อศึกษา
-5. **รองรับการฝึกทำซ้ำหลายรอบ (Repetition Practice)**
-   - บันทึกจำนวนรอบที่ทำผ่านของแต่ละข้อลงใน Browser (`localStorage`) อัตโนมัติ พร้อมปุ่ม **"↺ รีเซ็ตโค้ดฝึกซ้ำ"** เพื่อล้างโค้ดกลับมาฝึกทำใหม่ได้ไม่จำกัดรอบ
+🌐 **เข้าใช้งานผ่าน GitHub Pages ได้ทันที:**  
+👉 **[https://chinnakritthan.github.io/PracticeChinnakrit/](https://chinnakritthan.github.io/PracticeChinnakrit/)**
 
 ---
 
-## 📚 โครงสร้างบทเรียนหมวด Frontend (20 โจทย์)
+## 🎯 โครงสร้างวิชา Frontend Web Development (5 บทเรียน • 175 โจทย์ • 525 Test Cases)
 
-- **บทที่ 1: พื้นฐาน JavaScript & Logic (JS Fundamentals)** — ตัวแปร, Template Strings, เงื่อนไข `if/else`, ลูป `for`, และการจัดการข้อความ (URL Slug)
-- **บทที่ 2: การจัดการข้อมูล Array, Object & Async** — `filter`, `map`, `reduce`, ระบบค้นหา/เรียงราคาสินค้า และ `async/await` + `try/catch`
-- **บทที่ 3: การเชื่อม JS กับ HTML/CSS (DOM Manipulation)** — `querySelector`, `textContent`, `classList.toggle`, การสร้างรายการ `<li>` จาก Array และการควบคุม `disabled`
-- **บทที่ 4: การโต้ตอบกับผู้ใช้ (Events, Inputs & Validation)** — ระบบ Counter, ตัวนับตัวอักษรแบบเรียลไทม์, การตรวจสอบฟอร์ม (Form Validation) และระบบสลับแท็บ (Tabs UI)
-- **บทที่ 5: สร้างระบบเว็บใช้งานจริง (Mini Web Applications)** — Live Search Filter App, Expense Tracker App, Interactive Todo List App และ Mini Quiz Web App
+ในวิชา **Frontend Web Development** แบ่งออกเป็น **5 บทเรียนหลัก** โดยในแต่ละบทประกอบด้วย:
+1. **📘 เนื้อหาประจำบท (Lesson Guide)**:
+   - ภาพรวมและแนวคิดหลักของบทเรียน
+   - คำสั่งและเครื่องมือที่ต้องใช้ (`Syntax & Tools`) พร้อมคำอธิบาย
+   - ตัวอย่างโค้ดพร้อมคำอธิบาย (`Code Examples`) ที่สามารถเปิดดูเทียบระหว่างทำโจทย์ได้ตลอดเวลา
+2. **🧪 โจทย์ฝึกหัดประจำบท บทละ 35 ข้อ** (รวมทั้งสิ้น **175 ข้อ**):
+   - 🌱 **ระดับง่าย (Easy)**: 20 ข้อ — ฝึกพื้นฐานคำสั่งให้แม่นยำและคล่องมือ
+   - ⚡ **ระดับปานกลาง (Medium)**: 10 ข้อ — ประยุกต์ใช้หลายคำสั่งร่วมกันและแก้โจทย์เชิงตรรกะ
+   - 🔥 **ระดับยาก (Hard)**: 5 ข้อ — โจทย์ท้าทายและสร้างระบบ/Component ที่ใช้งานได้จริง
 
----
-
-## 🚀 วิธีเปิดใช้งานเว็บไซต์
-
-### วิธีที่ 1: เปิดผ่าน GitHub Pages (ออนไลน์)
-1. ไปที่หน้า Repository บน GitHub -> แท็บ **Settings** -> เมนู **Pages**
-2. ในส่วน **Build and deployment** เลือก Source เป็น **Deploy from a branch**
-3. เลือก Branch เป็น `main` และโฟลเดอร์ `/ (root)` แล้วกด **Save**
-4. รอประมาณ 1 นาที จะได้ลิงก์เว็บไซต์พร้อมใช้งานทันที
-
-### วิธีที่ 2: รันในเครื่องคอมพิวเตอร์ (Local Server)
-```bash
-# โคลนโปรเจกต์
-git clone https://github.com/Chinnakritthan/PracticeChinnakrit.git
-cd PracticeChinnakrit
-
-# รันด้วย Python (มีติดเครื่อง Mac อยู่แล้ว)
-python3 -m http.server 8080
-```
-จากนั้นเปิดเบราว์เซอร์ไปที่ `http://localhost:8080`
+### รายละเอียดทั้ง 5 บทเรียน
+| บทที่ | ชื่อบทเรียน | เนื้อหาหลัก | จำนวนโจทย์ |
+| :--- | :--- | :--- | :--- |
+| **บทที่ 1** | พื้นฐาน JavaScript & Logic | ตัวแปร, ชนิดข้อมูล, Operators, String/Math, `if/else`, Loops, Functions | 35 ข้อ (ง่าย 20 / ปานกลาง 10 / ยาก 5) |
+| **บทที่ 2** | การจัดการข้อมูล Array & Object Mastery | Array Methods (`map`, `filter`, `reduce`, `find`, `sort`), Object Manipulation, Destructuring | 35 ข้อ (ง่าย 20 / ปานกลาง 10 / ยาก 5) |
+| **บทที่ 3** | การเชื่อม JS กับ HTML/CSS (DOM Manipulation) | `querySelector`, `textContent`, `style`, `classList`, `createElement`, Dynamic Rendering | 35 ข้อ (ง่าย 20 / ปานกลาง 10 / ยาก 5) |
+| **บทที่ 4** | การโต้ตอบกับผู้ใช้ (Events, Forms & Async) | `addEventListener`, Form Validation, Live Filter, Timer, JSON & State Management | 35 ข้อ (ง่าย 20 / ปานกลาง 10 / ยาก 5) |
+| **บทที่ 5** | การสร้างระบบเว็บจริง (Mini Web Components & Full Web Apps) | Counter, Tabs, Modal, Accordion, Todo App, Shopping Cart, Expense Tracker, Kanban Board ฯลฯ | 35 ข้อ (ง่าย 20 / ปานกลาง 10 / ยาก 5) |
 
 ---
 
-## 📁 โครงสร้างไฟล์โปรเจกต์
+## ✨ ฟีเจอร์หลักของระบบ
+
+- **🗂️ Subject & Chapter Architecture**: หน้าแรกแบ่งเป็น Block ของแต่ละวิชา (`Frontend Web Development` พร้อมใช้งานทันที และรองรับการเพิ่มวิชาอื่นในอนาคต) เมื่อกดเข้าวิชาจะพบการ์ดแยกเป็นบทๆ พร้อมแถบความคืบหน้าแยกตามระดับความยาก
+- **📘 Built-in Lesson & Quick Reference**: อ่านเนื้อหา คำสั่งที่ต้องใช้ และตัวอย่างโค้ดได้ทั้งในหน้าบทเรียนและในแท็บ **`📘 เนื้อหาบทนี้`** ขณะกำลังเขียนโค้ดทำโจทย์
+- **💻 Multi-Tab Code Editor & Live Web Preview**: แก้ไขได้ทั้ง `index.html`, `style.css`, และ `script.js` พร้อมหน้าจอพรีวิวเว็บไซต์แบบเรียลไทม์และ Console Output
+- **✅ Automated Test Case Runner**: ตรวจคำตอบอัตโนมัติ (ข้อละ 3 Test Cases) แสดงค่าที่คาดหวัง (Expected) เทียบกับค่าที่ได้จริง (Actual)
+- **🔁 ระบบฝึกทำซ้ำ (Repetition Tracking)**:
+  - นับจำนวนรอบที่ทำผ่าน (`Passed X รอบ`) ในแต่ละข้อ
+  - ปุ่ม **🔄 ล้างโค้ดฝึกทำซ้ำรอบใหม่** เพื่อรีเซ็ตเฉพาะโค้ดกลับเป็นโจทย์ตั้งต้นโดยไม่เสียสถิติจำนวนรอบที่เคยผ่าน
+  - บันทึกความคืบหน้าและโค้ดล่าสุดอัตโนมัติใน `localStorage` พร้อมระบบ **Export / Import Backup (JSON)**
+
+---
+
+## 📁 โครงสร้างโปรเจกต์
 
 ```text
 PracticeChinnakrit/
-├── index.html                  # หน้าเว็บหลัก (Home, Subject List, IDE Workspace)
+├── index.html                    # หน้าเว็บหลัก (Home -> Subject -> Chapter -> Workspace IDE)
 ├── css/
-│   └── styles.css              # สไตล์ทั้งหมด (รองรับ Dark Mode / Light Mode)
+│   └── styles.css                # สไตล์ของระบบทั้งหมด (Dark IDE Theme + Lesson & Difficulty Badges)
 └── js/
-    ├── app.js                  # ระบบควบคุมหน้าเว็บ, Editor, Live Preview และ Test Runner
+    ├── app.js                    # ระบบจัดการ View, Lesson Viewer, Code Editor, Test Runner, Repetition Tracker
     └── data/
-        ├── subjects.js         # ข้อมูลบล็อกรายวิชา (เพิ่มวิชาใหม่ที่นี่)
-        ├── frontend-problems.js# รวมโจทย์ทั้งหมดของหมวด Frontend
-        ├── problems-mod1-2.js  # โจทย์บทที่ 1 และ 2 (JS Fundamentals & Data)
-        ├── problems-mod3-4.js  # โจทย์บทที่ 3 และ 4 (DOM & Events)
-        └── problems-mod5.js    # โจทย์บทที่ 5 (Mini Web Applications)
+        ├── subjects.js           # ข้อมูลกลุ่มวิชา (Subject Blocks)
+        ├── frontend-problems.js  # ตัวรวมบทเรียนทั้ง 5 บท และรายการโจทย์ทั้งหมด 175 ข้อ
+        ├── chapter1.js           # บทที่ 1: เนื้อหา + โจทย์ 35 ข้อ (ง่าย 20, ปานกลาง 10, ยาก 5)
+        ├── chapter2.js           # บทที่ 2: เนื้อหา + โจทย์ 35 ข้อ (ง่าย 20, ปานกลาง 10, ยาก 5)
+        ├── chapter3.js           # บทที่ 3: เนื้อหา + โจทย์ 35 ข้อ (ง่าย 20, ปานกลาง 10, ยาก 5)
+        ├── chapter4.js           # บทที่ 4: เนื้อหา + โจทย์ 35 ข้อ (ง่าย 20, ปานกลาง 10, ยาก 5)
+        └── chapter5.js           # บทที่ 5: เนื้อหา + โจทย์ 35 ข้อ (ง่าย 20, ปานกลาง 10, ยาก 5)
 ```

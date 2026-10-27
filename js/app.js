@@ -1,28 +1,32 @@
 const SUBJECTS = window.SUBJECTS || [];
+const FRONTEND_CHAPTERS = window.FRONTEND_CHAPTERS || [];
 const FRONTEND_PROBLEMS = window.FRONTEND_PROBLEMS || [];
 
 const STORAGE_KEY = 'practice_chinnakrit_progress_v1';
 const THEME_KEY = 'practice_chinnakrit_theme';
 
-// Map problems by subjectId
+const CHAPTERS_BY_SUBJECT = {
+  frontend: FRONTEND_CHAPTERS
+};
+
 const PROBLEMS_BY_SUBJECT = {
   frontend: FRONTEND_PROBLEMS
 };
 
-// Application State
 const state = {
-  currentView: 'home', // 'home' | 'subject' | 'workspace'
+  currentView: 'home', // 'home' | 'subject' | 'chapter' | 'workspace'
   currentSubjectId: 'frontend',
+  currentChapterId: 'ch-1',
   currentProblemId: null,
   activeEditorLang: 'js', // 'html' | 'css' | 'js'
-  activeLeftTab: 'description', // 'description' | 'tests' | 'solution'
+  activeLeftTab: 'description', // 'description' | 'lesson' | 'tests' | 'solution'
   solutionRevealed: false,
+  lessonCollapsed: false,
   editorDraft: { html: '', css: '', js: '' },
   progress: loadProgress(),
   filters: {
     search: '',
-    module: 'all',
-    difficulty: 'all',
+    difficulty: 'all', // 'all' | 'ง่าย' | 'ปานกลาง' | 'ยาก'
     status: 'all'
   }
 };
@@ -35,7 +39,6 @@ function loadProgress() {
     const raw = localStorage.getItem(STORAGE_KEY);
     return raw ? JSON.parse(raw) : {};
   } catch (e) {
-    console.warn('Failed to load progress from localStorage:', e);
     return {};
   }
 }
@@ -43,9 +46,7 @@ function loadProgress() {
 function saveProgress() {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state.progress));
-  } catch (e) {
-    console.warn('Failed to save progress:', e);
-  }
+  } catch (e) {}
 }
 
 function getProblemProgress(problemId) {
@@ -94,19 +95,23 @@ const els = {
 
   homeView: document.getElementById('home-view'),
   subjectView: document.getElementById('subject-view'),
+  chapterView: document.getElementById('chapter-view'),
   workspaceView: document.getElementById('workspace-view'),
 
   heroSummaryBox: document.getElementById('hero-summary-box'),
   subjectsGrid: document.getElementById('subjects-grid'),
 
   subjectBanner: document.getElementById('subject-banner'),
-  searchInput: document.getElementById('problem-search-input'),
-  filterModule: document.getElementById('filter-module'),
-  filterDifficulty: document.getElementById('filter-difficulty'),
-  filterStatus: document.getElementById('filter-status'),
-  curriculumContainer: document.getElementById('curriculum-container'),
+  chaptersGrid: document.getElementById('chapters-grid'),
 
-  btnBackToSubject: document.getElementById('btn-back-to-subject'),
+  chapterHeaderBox: document.getElementById('chapter-header-box'),
+  chapterLessonSection: document.getElementById('chapter-lesson-section'),
+  difficultyTabsBar: document.getElementById('difficulty-tabs-bar'),
+  searchInput: document.getElementById('problem-search-input'),
+  filterStatus: document.getElementById('filter-status'),
+  chapterProblemsContainer: document.getElementById('chapter-problems-container'),
+
+  btnBackToChapter: document.getElementById('btn-back-to-chapter'),
   btnPrevProblem: document.getElementById('btn-prev-problem'),
   btnNextProblem: document.getElementById('btn-next-problem'),
   wsProblemSelect: document.getElementById('ws-problem-select'),
@@ -116,6 +121,7 @@ const els = {
   btnRunTests: document.getElementById('btn-run-tests'),
 
   problemDetailContent: document.getElementById('problem-detail-content'),
+  workspaceLessonContent: document.getElementById('workspace-lesson-content'),
   testResultsContainer: document.getElementById('test-results-container'),
   solutionContainer: document.getElementById('solution-container'),
   testTabBadge: document.getElementById('test-tab-badge'),
@@ -140,7 +146,7 @@ const els = {
 };
 
 // ============================================================================
-// Utilities & Toast
+// Utilities & Lookups
 // ============================================================================
 function escapeHtml(str) {
   return String(str ?? '')
@@ -160,12 +166,21 @@ function showToast(message, type = 'info') {
   }, 3200);
 }
 
-function getAllProblemsForSubject(subjectId) {
-  return PROBLEMS_BY_SUBJECT[subjectId] || [];
-}
-
 function getSubjectById(subjectId) {
   return SUBJECTS.find(s => s.id === subjectId);
+}
+
+function getChaptersForSubject(subjectId) {
+  return CHAPTERS_BY_SUBJECT[subjectId] || [];
+}
+
+function getChapterById(chapterId) {
+  const chapters = getChaptersForSubject(state.currentSubjectId);
+  return chapters.find(c => c.id === chapterId) || chapters[0] || null;
+}
+
+function getAllProblemsForSubject(subjectId) {
+  return PROBLEMS_BY_SUBJECT[subjectId] || [];
 }
 
 function getProblemById(problemId) {
@@ -198,7 +213,7 @@ function renderBreadcrumb() {
   const parts = [];
   parts.push(`<button class="breadcrumb-link" data-nav="home">🏠 หน้าแรก</button>`);
 
-  if (state.currentView === 'subject' || state.currentView === 'workspace') {
+  if (state.currentView !== 'home') {
     const subj = getSubjectById(state.currentSubjectId);
     if (subj) {
       parts.push(`<span>/</span>`);
@@ -212,12 +227,26 @@ function renderBreadcrumb() {
     }
   }
 
+  if (state.currentView === 'chapter' || state.currentView === 'workspace') {
+    const chap = getChapterById(state.currentChapterId);
+    if (chap) {
+      parts.push(`<span>/</span>`);
+      if (state.currentView === 'chapter') {
+        parts.push(`<span class="breadcrumb-current">${escapeHtml(chap.shortTitle || chap.title)}</span>`);
+      } else {
+        parts.push(
+          `<button class="breadcrumb-link" data-nav="chapter">${escapeHtml(chap.shortTitle || chap.title)}</button>`
+        );
+      }
+    }
+  }
+
   if (state.currentView === 'workspace') {
     const prob = getProblemById(state.currentProblemId);
     if (prob) {
       parts.push(`<span>/</span>`);
       parts.push(
-        `<span class="breadcrumb-current">ข้อที่ ${prob.number}: ${escapeHtml(prob.title)}</span>`
+        `<span class="breadcrumb-current">ข้อที่ ${prob.number} (${escapeHtml(prob.difficulty)})</span>`
       );
     }
   }
@@ -228,6 +257,7 @@ function renderBreadcrumb() {
       const target = btn.getAttribute('data-nav');
       if (target === 'home') navigateToHome();
       if (target === 'subject') navigateToSubject(state.currentSubjectId);
+      if (target === 'chapter') navigateToChapter(state.currentChapterId);
     });
   });
 }
@@ -258,12 +288,12 @@ function renderHomeView() {
       <div class="metric-label">จำนวนรอบที่ฝึกซ้ำทั้งหมด</div>
     </div>
     <div class="summary-metric">
-      <div class="metric-val">5 บทเรียน</div>
-      <div class="metric-label">ปูพื้นฐานถึงสร้างเว็บจริง</div>
+      <div class="metric-val">${FRONTEND_CHAPTERS.length} บทเรียน</div>
+      <div class="metric-label">เนื้อหา + ตัวอย่าง + โจทย์</div>
     </div>
     <div class="summary-metric">
-      <div class="metric-val">60 Test Cases</div>
-      <div class="metric-label">ตรวจคำตอบอัตโนมัติทันที</div>
+      <div class="metric-val">35 ข้อ/บท</div>
+      <div class="metric-label">ง่าย 20 • ปานกลาง 10 • ยาก 5</div>
     </div>
   `;
 
@@ -295,17 +325,17 @@ function renderHomeView() {
             isAvailable
               ? `
             <div class="progress-meta">
-              <span>ความคืบหน้า</span>
+              <span>ความคืบหน้ารวมทุกบท</span>
               <strong>${solved}/${total} โจทย์ (${progressPct}%)</strong>
             </div>
             <div class="progress-bar-bg">
               <div class="progress-bar-fill" style="width: ${progressPct}%"></div>
             </div>
-            <button class="subject-enter-btn">เข้าสู่บทเรียนและฝึกทำโจทย์ →</button>
+            <button class="subject-enter-btn">เลือกบทเรียนและเริ่มฝึกทำโจทย์ →</button>
           `
               : `
             <button class="subject-enter-btn disabled" disabled>
-              🔒 เตรียมเปิดใช้งานในอนาคต (สามารถเพิ่มโจทย์เองได้)
+              🔒 เตรียมเปิดใช้งานในอนาคต
             </button>
           `
           }
@@ -323,7 +353,7 @@ function renderHomeView() {
 }
 
 // ============================================================================
-// VIEW 2: Subject Curriculum & Problem List View
+// VIEW 2: Subject Chapters Overview (แยกเป็นบทๆ)
 // ============================================================================
 function renderSubjectView() {
   const subject = getSubjectById(state.currentSubjectId);
@@ -339,42 +369,206 @@ function renderSubjectView() {
       <p>${escapeHtml(subject.description)}</p>
     </div>
     <div style="display:flex; gap:10px; flex-wrap:wrap;">
+      <div class="stat-pill">📚 ทั้งหมด: <strong>${FRONTEND_CHAPTERS.length} บทเรียน (${problems.length} ข้อ)</strong></div>
       <div class="stat-pill">✅ ผ่านแล้ว: <strong>${solvedCount}/${problems.length}</strong></div>
       <div class="stat-pill">🔄 ฝึกซ้ำรวม: <strong>${totalReps} รอบ</strong></div>
     </div>
   `;
 
-  // Populate module filter options
-  els.filterModule.innerHTML =
-    `<option value="all">ทุกบทเรียน (All Modules)</option>` +
-    subject.modules
-      .map(m => `<option value="${m.id}">${escapeHtml(m.title)}</option>`)
-      .join('');
-  els.filterModule.value = state.filters.module;
+  const chapters = getChaptersForSubject(subject.id);
+  els.chaptersGrid.innerHTML = chapters
+    .map(ch => {
+      const chProblems = ch.problems || [];
+      const easyTotal = chProblems.filter(p => p.difficulty === 'ง่าย').length;
+      const easySolved = chProblems.filter(p => p.difficulty === 'ง่าย' && getProblemProgress(p.id).solved).length;
 
-  renderCurriculumList();
+      const medTotal = chProblems.filter(p => p.difficulty === 'ปานกลาง').length;
+      const medSolved = chProblems.filter(p => p.difficulty === 'ปานกลาง' && getProblemProgress(p.id).solved).length;
+
+      const hardTotal = chProblems.filter(p => p.difficulty === 'ยาก').length;
+      const hardSolved = chProblems.filter(p => p.difficulty === 'ยาก' && getProblemProgress(p.id).solved).length;
+
+      const totalSolved = easySolved + medSolved + hardSolved;
+      const pct = chProblems.length > 0 ? Math.round((totalSolved / chProblems.length) * 100) : 0;
+
+      return `
+        <article class="chapter-card" data-chapter-id="${ch.id}">
+          <div>
+            <div class="subject-card-top">
+              <div class="subject-icon">${ch.icon || '📘'}</div>
+              <span class="subject-status-badge ready">35 โจทย์ + เนื้อหา</span>
+            </div>
+            <h3>${escapeHtml(ch.title)}</h3>
+            <p>${escapeHtml(ch.description)}</p>
+            <div class="subject-tags">
+              ${(ch.tags || []).map(t => `<span class="tag-chip">${escapeHtml(t)}</span>`).join('')}
+            </div>
+
+            <div class="chapter-diff-pills">
+              <div class="chapter-diff-pill">
+                <span class="diff-badge diff-ง่าย">🌱 ง่าย</span>
+                <strong>${easySolved} / ${easyTotal} ข้อ</strong>
+              </div>
+              <div class="chapter-diff-pill">
+                <span class="diff-badge diff-ปานกลาง">⚡ ปานกลาง</span>
+                <strong>${medSolved} / ${medTotal} ข้อ</strong>
+              </div>
+              <div class="chapter-diff-pill">
+                <span class="diff-badge diff-ยาก">🔥 ยาก</span>
+                <strong>${hardSolved} / ${hardTotal} ข้อ</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="subject-progress-wrap">
+            <div class="progress-meta">
+              <span>ความคืบหน้าบทที่ ${ch.number}</span>
+              <strong>${totalSolved}/${chProblems.length} ข้อ (${pct}%)</strong>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" style="width: ${pct}%"></div>
+            </div>
+            <button class="subject-enter-btn">📖 เข้าเรียนเนื้อหา &amp; ฝึกทำโจทย์บทที่ ${ch.number} →</button>
+          </div>
+        </article>
+      `;
+    })
+    .join('');
+
+  els.chaptersGrid.querySelectorAll('.chapter-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const chId = card.getAttribute('data-chapter-id');
+      navigateToChapter(chId);
+    });
+  });
 }
 
-function renderCurriculumList() {
-  const subject = getSubjectById(state.currentSubjectId);
-  if (!subject) return;
+// ============================================================================
+// VIEW 3: Chapter Lesson Content + 35 Problems View
+// ============================================================================
+function buildLessonMarkup(chapter) {
+  const lesson = chapter.lesson;
+  if (!lesson) return '';
 
-  const allProblems = getAllProblemsForSubject(subject.id);
-  const { search, module, difficulty, status } = state.filters;
+  return `
+    <div class="lesson-overview-box">
+      <strong>💡 ภาพรวมเนื้อหาบทนี้:</strong> ${escapeHtml(lesson.overview)}
+    </div>
+
+    <div class="lesson-sub-heading">🛠️ คำสั่งและเครื่องมือที่ต้องใช้ในบทนี้ (Syntax &amp; Tools)</div>
+    <div class="syntax-grid">
+      ${(lesson.mustUse || [])
+        .map(
+          item => `
+        <div class="syntax-card">
+          <div class="syntax-card-title">${escapeHtml(item.syntax)}</div>
+          <div class="syntax-card-desc">${escapeHtml(item.usage)}</div>
+          <pre class="syntax-card-code"><code>${escapeHtml(item.example)}</code></pre>
+        </div>
+      `
+        )
+        .join('')}
+    </div>
+
+    <div class="lesson-sub-heading">💻 ตัวอย่างโค้ดพร้อมคำอธิบาย (Code Examples)</div>
+    <div class="examples-grid">
+      ${(lesson.examples || [])
+        .map(
+          ex => `
+        <div class="example-card">
+          <h4>${escapeHtml(ex.title)}</h4>
+          <p>${escapeHtml(ex.explanation)}</p>
+          <pre class="syntax-card-code"><code>${escapeHtml(ex.code)}</code></pre>
+        </div>
+      `
+        )
+        .join('')}
+    </div>
+  `;
+}
+
+function renderChapterView() {
+  const chapter = getChapterById(state.currentChapterId);
+  if (!chapter) return;
+
+  const chProblems = chapter.problems || [];
+  const solvedCount = chProblems.filter(p => getProblemProgress(p.id).solved).length;
+  const totalReps = chProblems.reduce((acc, p) => acc + (getProblemProgress(p.id).reps || 0), 0);
+
+  els.chapterHeaderBox.innerHTML = `
+    <div class="subject-banner-info">
+      <div style="margin-bottom:8px;">
+        <button id="btn-back-to-chapters" class="ws-btn secondary">← กลับหน้าเลือกบทเรียน</button>
+      </div>
+      <h1>${chapter.icon || '📘'} ${escapeHtml(chapter.title)}</h1>
+      <p>${escapeHtml(chapter.description)}</p>
+    </div>
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+      <div class="stat-pill">✅ ผ่านแล้ว: <strong>${solvedCount}/${chProblems.length} ข้อ</strong></div>
+      <div class="stat-pill">🔄 ฝึกซ้ำบทนี้: <strong>${totalReps} รอบ</strong></div>
+    </div>
+  `;
+
+  document.getElementById('btn-back-to-chapters').addEventListener('click', () => {
+    navigateToSubject(state.currentSubjectId);
+  });
+
+  // Render Lesson Box
+  els.chapterLessonSection.innerHTML = `
+    <div class="lesson-header-bar" id="lesson-toggle-bar">
+      <h2>📚 สรุปเนื้อหา คำสั่งที่ต้องใช้ และตัวอย่างโค้ดประจำบทที่ ${chapter.number}</h2>
+      <span class="ws-btn secondary" id="lesson-toggle-label">
+        ${state.lessonCollapsed ? '▼ กางดูเนื้อหาบทเรียน' : '▲ พับเก็บเนื้อหา'}
+      </span>
+    </div>
+    <div class="lesson-body ${state.lessonCollapsed ? 'collapsed' : ''}" id="lesson-body-content">
+      ${buildLessonMarkup(chapter)}
+    </div>
+  `;
+
+  document.getElementById('lesson-toggle-bar').addEventListener('click', () => {
+    state.lessonCollapsed = !state.lessonCollapsed;
+    document
+      .getElementById('lesson-body-content')
+      .classList.toggle('collapsed', state.lessonCollapsed);
+    document.getElementById('lesson-toggle-label').textContent = state.lessonCollapsed
+      ? '▼ กางดูเนื้อหาบทเรียน'
+      : '▲ พับเก็บเนื้อหา';
+  });
+
+  // Sync difficulty tabs
+  els.difficultyTabsBar.querySelectorAll('.diff-tab-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-diff') === state.filters.difficulty);
+  });
+
+  renderChapterProblemsList();
+}
+
+function renderChapterProblemsList() {
+  const chapter = getChapterById(state.currentChapterId);
+  if (!chapter) return;
+
+  const chProblems = chapter.problems || [];
+  const { search, difficulty, status } = state.filters;
   const q = search.trim().toLowerCase();
 
-  const htmlBlocks = subject.modules
-    .filter(mod => module === 'all' || mod.id === module)
-    .map(mod => {
-      const modProblems = allProblems.filter(p => p.moduleId === mod.id);
-      const filtered = modProblems.filter(p => {
+  const groups = [
+    { key: 'ง่าย', title: '🌱 ระดับง่าย (20 ข้อ) — ฝึกพื้นฐานและคำสั่งหลักให้แม่นยำ', desc: 'ข้อที่ 1 – 20' },
+    { key: 'ปานกลาง', title: '⚡ ระดับปานกลาง (10 ข้อ) — ประยุกต์ใช้หลายคำสั่งร่วมกัน', desc: 'ข้อที่ 21 – 30' },
+    { key: 'ยาก', title: '🔥 ระดับยาก (5 ข้อ) — โจทย์ท้าทายและสร้างระบบใช้งานจริง', desc: 'ข้อที่ 31 – 35' }
+  ];
+
+  const htmlBlocks = groups
+    .filter(g => difficulty === 'all' || g.key === difficulty)
+    .map(g => {
+      const groupProblems = chProblems.filter(p => p.difficulty === g.key);
+      const filtered = groupProblems.filter(p => {
         const prog = getProblemProgress(p.id);
-        if (difficulty !== 'all' && p.difficulty !== difficulty) return false;
         if (status === 'solved' && !prog.solved) return false;
         if (status === 'unsolved' && prog.solved) return false;
         if (q) {
           const matchTitle = p.title.toLowerCase().includes(q);
-          const matchTags = p.tags.some(t => t.toLowerCase().includes(q));
+          const matchTags = (p.tags || []).some(t => t.toLowerCase().includes(q));
           const matchDesc = p.description.toLowerCase().includes(q);
           if (!matchTitle && !matchTags && !matchDesc) return false;
         }
@@ -383,17 +577,17 @@ function renderCurriculumList() {
 
       if (filtered.length === 0) return '';
 
-      const modSolved = modProblems.filter(p => getProblemProgress(p.id).solved).length;
+      const groupSolved = groupProblems.filter(p => getProblemProgress(p.id).solved).length;
 
       return `
         <div class="module-block">
           <div class="module-header">
             <div class="module-title-wrap">
-              <h3>${escapeHtml(mod.title)}</h3>
-              <p>${escapeHtml(mod.description)}</p>
+              <h3>${g.title}</h3>
+              <p>${g.desc}</p>
             </div>
             <span class="module-progress-pill">
-              ผ่านแล้ว ${modSolved} / ${modProblems.length} ข้อ
+              ผ่านแล้ว ${groupSolved} / ${groupProblems.length} ข้อ
             </span>
           </div>
           <div class="problems-list">
@@ -412,7 +606,7 @@ function renderCurriculumList() {
                         <h4>ข้อที่ ${prob.number}: ${escapeHtml(prob.title)}</h4>
                         <div class="problem-meta">
                           <span class="diff-badge diff-${prob.difficulty}">${escapeHtml(prob.difficulty)}</span>
-                          ${prob.tags.map(t => `<span class="tag-chip">${escapeHtml(t)}</span>`).join('')}
+                          ${(prob.tags || []).map(t => `<span class="tag-chip">${escapeHtml(t)}</span>`).join('')}
                         </div>
                       </div>
                     </div>
@@ -435,16 +629,16 @@ function renderCurriculumList() {
     .filter(Boolean);
 
   if (htmlBlocks.length === 0) {
-    els.curriculumContainer.innerHTML = `
+    els.chapterProblemsContainer.innerHTML = `
       <div class="module-block" style="padding: 36px; text-align: center; color: var(--text-secondary);">
-        ไม่พบโจทย์ที่ตรงกับตัวกรองของคุณ ลองเปลี่ยนคำค้นหาหรือตัวกรองดูนะครับ
+        ไม่พบโจทย์ที่ตรงกับตัวกรองของคุณ
       </div>
     `;
     return;
   }
 
-  els.curriculumContainer.innerHTML = htmlBlocks.join('');
-  els.curriculumContainer.querySelectorAll('.problem-row').forEach(row => {
+  els.chapterProblemsContainer.innerHTML = htmlBlocks.join('');
+  els.chapterProblemsContainer.querySelectorAll('.problem-row').forEach(row => {
     row.addEventListener('click', () => {
       const probId = row.getAttribute('data-problem-id');
       navigateToWorkspace(probId);
@@ -453,13 +647,16 @@ function renderCurriculumList() {
 }
 
 // ============================================================================
-// VIEW 3: Workspace IDE View
+// VIEW 4: Workspace IDE View
 // ============================================================================
 function loadProblemIntoWorkspace(problemId) {
   const problem = getProblemById(problemId);
   if (!problem) return;
 
   state.currentProblemId = problem.id;
+  if (problem.chapterId) {
+    state.currentChapterId = problem.chapterId;
+  }
   state.solutionRevealed = false;
 
   const prog = getProblemProgress(problem.id);
@@ -467,24 +664,26 @@ function loadProblemIntoWorkspace(problemId) {
     ? { ...prog.savedCode }
     : { ...problem.starterCode };
 
-  // Populate top problem selector dropdown
-  const allProblems = getAllProblemsForSubject(state.currentSubjectId);
-  els.wsProblemSelect.innerHTML = allProblems
+  const chapter = getChapterById(state.currentChapterId);
+  const chapterProblems = chapter ? chapter.problems : FRONTEND_PROBLEMS;
+
+  els.wsProblemSelect.innerHTML = chapterProblems
     .map(p => {
       const pProg = getProblemProgress(p.id);
       const check = pProg.solved ? '✓ ' : '';
       return `<option value="${p.id}" ${p.id === problem.id ? 'selected' : ''}>
-        ${check}ข้อที่ ${p.number}: ${escapeHtml(p.title)}
+        ${check}[${p.difficulty}] ข้อที่ ${p.number}: ${escapeHtml(p.title)}
       </option>`;
     })
     .join('');
 
-  const idx = allProblems.findIndex(p => p.id === problem.id);
+  const idx = chapterProblems.findIndex(p => p.id === problem.id);
   els.btnPrevProblem.disabled = idx <= 0;
-  els.btnNextProblem.disabled = idx >= allProblems.length - 1;
+  els.btnNextProblem.disabled = idx >= chapterProblems.length - 1;
 
   updateWorkspaceRepBadge();
   renderProblemDescriptionPane(problem);
+  renderWorkspaceLessonPane(chapter);
   renderInitialTestCasesPane(problem);
   renderSolutionPane(problem);
 
@@ -498,12 +697,20 @@ function updateWorkspaceRepBadge() {
   els.wsRepBadge.textContent = `🔄 ผ่านแล้ว ${prog.reps || 0} รอบ`;
 }
 
+function renderWorkspaceLessonPane(chapter) {
+  if (!chapter) return;
+  els.workspaceLessonContent.innerHTML = `
+    <h3 style="margin-bottom:12px;">${chapter.icon || '📘'} ${escapeHtml(chapter.title)}</h3>
+    ${buildLessonMarkup(chapter)}
+  `;
+}
+
 function renderProblemDescriptionPane(problem) {
   els.problemDetailContent.innerHTML = `
     <h2>ข้อที่ ${problem.number}: ${escapeHtml(problem.title)}</h2>
     <div class="problem-detail-meta">
-      <span class="diff-badge diff-${problem.difficulty}">${escapeHtml(problem.difficulty)}</span>
-      ${problem.tags.map(t => `<span class="tag-chip">${escapeHtml(t)}</span>`).join('')}
+      <span class="diff-badge diff-${problem.difficulty}">ระดับ: ${escapeHtml(problem.difficulty)}</span>
+      ${(problem.tags || []).map(t => `<span class="tag-chip">${escapeHtml(t)}</span>`).join('')}
     </div>
 
     <div class="problem-desc-box">
@@ -570,7 +777,7 @@ function renderSolutionPane(problem) {
       <div class="solution-warning-box">
         <h3 style="margin-bottom: 8px;">🔒 เฉลยถูกซ่อนไว้</h3>
         <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 16px;">
-          แนะนำให้ลองเปิดดู <strong>คำใบ้ (Hints)</strong> ในแท็บโจทย์ก่อนนะครับ หากลองแล้วยังติดขัดสามารถกดดูเฉลยด้านล่างได้เลย
+          แนะนำให้ลองเปิดดู <strong>📘 เนื้อหาบทนี้</strong> หรือ <strong>คำใบ้ (Hints)</strong> ก่อนนะครับ หากยังติดขัดสามารถกดดูเฉลยด้านล่างได้เลย
         </p>
         <button id="btn-reveal-solution" class="ws-btn secondary">
           👁 แสดงโค้ดเฉลย (Reveal Solution)
@@ -587,7 +794,7 @@ function renderSolutionPane(problem) {
   els.solutionContainer.innerHTML = `
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 14px;">
       <h3 style="font-size: 1rem;">✅ โค้ดเฉลยตัวอย่าง</h3>
-      <button id="btn-apply-solution" class="ws-btn secondary" title="คัดลอกโค้ดเฉลยไปใส่ใน Editor">
+      <button id="btn-apply-solution" class="ws-btn secondary">
         📋 นำเฉลยไปใส่ใน Editor
       </button>
     </div>
@@ -600,11 +807,6 @@ function renderSolutionPane(problem) {
     <div class="solution-code-block">
       <h4>index.html</h4>
       <pre class="solution-pre"><code>${escapeHtml(problem.solution.html)}</code></pre>
-    </div>
-
-    <div class="solution-code-block">
-      <h4>style.css</h4>
-      <pre class="solution-pre"><code>${escapeHtml(problem.solution.css)}</code></pre>
     </div>
   `;
 
@@ -645,6 +847,7 @@ function switchLeftPaneTab(tabName) {
     btn.classList.toggle('active', btn.getAttribute('data-left-tab') === tabName);
   });
   document.getElementById('left-tab-description').classList.toggle('active', tabName === 'description');
+  document.getElementById('left-tab-lesson').classList.toggle('active', tabName === 'lesson');
   document.getElementById('left-tab-tests').classList.toggle('active', tabName === 'tests');
   document.getElementById('left-tab-solution').classList.toggle('active', tabName === 'solution');
 }
@@ -899,13 +1102,14 @@ function resetCurrentProblemCode() {
 }
 
 function goToAdjacentProblem(direction) {
-  const allProblems = getAllProblemsForSubject(state.currentSubjectId);
-  const idx = allProblems.findIndex(p => p.id === state.currentProblemId);
+  const chapter = getChapterById(state.currentChapterId);
+  const list = chapter ? chapter.problems : FRONTEND_PROBLEMS;
+  const idx = list.findIndex(p => p.id === state.currentProblemId);
   const nextIdx = idx + direction;
-  if (nextIdx >= 0 && nextIdx < allProblems.length) {
-    navigateToWorkspace(allProblems[nextIdx].id);
+  if (nextIdx >= 0 && nextIdx < list.length) {
+    navigateToWorkspace(list[nextIdx].id);
   } else {
-    navigateToSubject(state.currentSubjectId);
+    navigateToChapter(state.currentChapterId);
   }
 }
 
@@ -916,6 +1120,7 @@ function setView(viewName) {
   state.currentView = viewName;
   els.homeView.classList.toggle('active', viewName === 'home');
   els.subjectView.classList.toggle('active', viewName === 'subject');
+  els.chapterView.classList.toggle('active', viewName === 'chapter');
   els.workspaceView.classList.toggle('active', viewName === 'workspace');
   renderBreadcrumb();
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -930,6 +1135,15 @@ function navigateToSubject(subjectId) {
   state.currentSubjectId = subjectId;
   renderSubjectView();
   setView('subject');
+}
+
+function navigateToChapter(chapterId) {
+  state.currentChapterId = chapterId;
+  state.filters.difficulty = 'all';
+  state.filters.search = '';
+  els.searchInput.value = '';
+  renderChapterView();
+  setView('chapter');
 }
 
 function navigateToWorkspace(problemId) {
@@ -957,30 +1171,30 @@ function initTheme() {
 function initEventListeners() {
   els.brandLogo.addEventListener('click', () => navigateToHome());
 
-  // Subject View Filters
+  // Chapter View Difficulty Tabs & Filters
+  els.difficultyTabsBar.querySelectorAll('.diff-tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.filters.difficulty = btn.getAttribute('data-diff');
+      els.difficultyTabsBar.querySelectorAll('.diff-tab-btn').forEach(b => {
+        b.classList.toggle('active', b === btn);
+      });
+      renderChapterProblemsList();
+    });
+  });
+
   els.searchInput.addEventListener('input', e => {
     state.filters.search = e.target.value;
-    renderCurriculumList();
-  });
-
-  els.filterModule.addEventListener('change', e => {
-    state.filters.module = e.target.value;
-    renderCurriculumList();
-  });
-
-  els.filterDifficulty.addEventListener('change', e => {
-    state.filters.difficulty = e.target.value;
-    renderCurriculumList();
+    renderChapterProblemsList();
   });
 
   els.filterStatus.addEventListener('change', e => {
     state.filters.status = e.target.value;
-    renderCurriculumList();
+    renderChapterProblemsList();
   });
 
   // Workspace Controls
-  els.btnBackToSubject.addEventListener('click', () => {
-    navigateToSubject(state.currentSubjectId);
+  els.btnBackToChapter.addEventListener('click', () => {
+    navigateToChapter(state.currentChapterId);
   });
 
   els.btnPrevProblem.addEventListener('click', () => goToAdjacentProblem(-1));
@@ -1025,7 +1239,7 @@ function initEventListeners() {
     });
   });
 
-  // Code Editor typing, line numbers, Tab key & live preview debounce
+  // Code Editor typing & shortcuts
   let previewDebounce = null;
   els.codeEditor.addEventListener('input', () => {
     state.editorDraft[state.activeEditorLang] = els.codeEditor.value;
@@ -1057,7 +1271,6 @@ function initEventListeners() {
     }
   });
 
-  // Global Keyboard Shortcuts inside Workspace
   window.addEventListener('keydown', e => {
     if (state.currentView !== 'workspace') return;
     if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
@@ -1105,6 +1318,7 @@ function initEventListeners() {
       updateGlobalHeaderStats();
       renderHomeView();
       if (state.currentView === 'subject') renderSubjectView();
+      if (state.currentView === 'chapter') renderChapterView();
       if (state.currentView === 'workspace') loadProblemIntoWorkspace(state.currentProblemId);
       els.extendModal.classList.add('hidden');
       showToast('ล้างสถิติการฝึกทั้งหมดเรียบร้อยแล้ว', 'info');
