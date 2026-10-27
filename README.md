@@ -1,5 +1,7 @@
 # 💻 PracticeChinnakrit — แพลตฟอร์มฝึกทำโจทย์และสร้างเว็บไซต์
 
+🌐 **ลิงก์เข้าใช้งานเว็บไซต์ (GitHub Pages):** **[https://chinnakritthan.github.io/PracticeChinnakrit/](https://chinnakritthan.github.io/PracticeChinnakrit/)**
+
 เว็บแอปพลิเคชันสำหรับฝึกเขียนโค้ดซ้ำๆ หลายรอบเพื่อให้เข้าใจลึกซึ้ง ตั้งแต่พื้นฐานไปจนถึงการสร้างเว็บแอปพลิเคชันใช้งานจริง โดยแบ่งแยกเป็นหมวดวิชา (Subject Blocks) และรองรับการขยายเพิ่มวิชาใหม่ในอนาคต
 
 ---
