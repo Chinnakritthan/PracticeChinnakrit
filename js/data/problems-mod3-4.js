@@ -2,7 +2,7 @@
  * โจทย์บทที่ 3 (DOM Manipulation) และ บทที่ 4 (Events, Inputs & Validation)
  */
 
-export const PROBLEMS_MOD_3_4 = [
+window.PROBLEMS_MOD_3_4 = [
   // =========================================================================
   // MODULE 3: การเชื่อม JS กับ HTML/CSS (DOM Manipulation)
   // =========================================================================

@@ -2,7 +2,7 @@
  * โจทย์บทที่ 5 (Mini Web Applications) — รวมทุกทักษะมาสร้างเว็บแอปที่ทำงานได้จริง
  */
 
-export const PROBLEMS_MOD_5 = [
+window.PROBLEMS_MOD_5 = [
   {
     id: 'fe-17',
     number: 17,

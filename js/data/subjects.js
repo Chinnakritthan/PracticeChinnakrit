@@ -2,7 +2,7 @@
  * รายการหมวดวิชา (Subject Blocks) บนหน้าแรก
  * สามารถเพิ่มวิชาใหม่ในอนาคตได้ง่ายๆ โดยเพิ่ม Object ลงใน SUBJECTS
  */
-export const SUBJECTS = [
+window.SUBJECTS = [
   {
     id: 'frontend',
     title: 'Frontend Web Development (JS & DOM Mastery)',

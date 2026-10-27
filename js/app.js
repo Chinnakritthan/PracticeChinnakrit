@@ -1,5 +1,5 @@
-import { SUBJECTS } from './data/subjects.js';
-import { FRONTEND_PROBLEMS } from './data/frontend-problems.js';
+const SUBJECTS = window.SUBJECTS || [];
+const FRONTEND_PROBLEMS = window.FRONTEND_PROBLEMS || [];
 
 const STORAGE_KEY = 'practice_chinnakrit_progress_v1';
 const THEME_KEY = 'practice_chinnakrit_theme';
